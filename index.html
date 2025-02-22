@@ -3,6 +3,25 @@
 <head>
   <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
   <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  <script>
+    AFRAME.registerComponent('move', {
+      init: function() {
+        // wait until the model is loaded
+        this.el.addEventListener("model-loaded", evt => {
+          const mixer = new THREE.AnimationMixer(this.el.components['gltf-model'].model);
+          const clips = this.el.components['gltf-model'].model.animations[0];
+          mixer.clipAction(clips).play();
+          // "expose" the animation mixer
+          this.mixer = mixer;
+        })
+      },
+      // on each render loop (actually before each render loop)
+      tick: function(t, dt) {
+        if (!this.mixer) return; // if the mixer exists
+        this.mixer.update(dt / 1000) // update it with the delta time
+      }
+    })
+  </script>
 </head>
 <body style="margin : 0px; overflow: hidden;">
     <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
@@ -12,8 +31,7 @@
             <a-entity
                 gltf-model="url(https://stanislavin.github.io/wall-ar/ball_2.glb)"
                 rotation="-90 0 0"
-                scale="1 1 1"
-                animation-mixer="clip: *; loop: true; timeScale: 1">
+                scale="1 1 1">
             </a-entity>
         </a-marker>
         <!-- Camera -->
