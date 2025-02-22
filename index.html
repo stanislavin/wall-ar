@@ -13,11 +13,34 @@
                 gltf-model="url(https://stanislavin.github.io/wall-ar/ball_2.glb)"
                 rotation="-90 0 0"
                 scale="1 1 1"
-                animation-mixer="clip: *; loop: true; timeScale: 0.5">
+                custom-animation>
             </a-entity>
         </a-marker>
         <!-- Camera -->
         <a-entity camera></a-entity>
     </a-scene>
+    <script>
+        AFRAME.registerComponent('custom-animation', {
+          init: function () {
+            this.el.addEventListener('model-loaded', () => {
+              const model = this.el.getObject3D('mesh');
+              if (model.animations && model.animations.length > 0) {
+                this.mixer = new THREE.AnimationMixer(model);
+                const action = this.mixer.clipAction(model.animations[0]); // First animation
+                action.setLoop(THREE.LoopRepeat);
+                action.timeScale = 0.5;
+                action.play();
+              } else {
+                console.log('No animations found in model');
+              }
+            });
+          },
+          tick: function (time, delta) {
+            if (this.mixer) {
+              this.mixer.update(delta / 1000); // Update animation each frame
+            }
+          }
+        });
+      </script>
 </body>
 </html>
