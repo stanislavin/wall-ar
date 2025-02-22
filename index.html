@@ -9,7 +9,12 @@
         <!-- Marker -->
         <a-marker type="pattern" url="marker.patt">
             <!-- Your 3D Animation -->
-            <a-entity gltf-model="url(https://stanislavin.github.io/wall-ar/ball_2.glb)" rotation="-90 0 0" scale="1 1 1"></a-entity>
+            <a-entity
+                gltf-model="url(https://stanislavin.github.io/wall-ar/ball_2.glb)"
+                rotation="-90 0 0"
+                scale="1 1 1"
+                animation-mixer="clip: *; loop: true">
+            </a-entity>
         </a-marker>
         <!-- Camera -->
         <a-entity camera></a-entity>
